@@ -1,0 +1,35 @@
+name: Build and test
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - run: chmod +x gradlew && ./gradlew build --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qupath-extension-topoalign
+          path: build/libs/*.jar
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: python -m pip install "TopoAlign @ git+https://github.com/DNale-11/cell_registration.git@693c6781e162f15e9f7783c7da3b94fa270fb2b0" -r python/requirements.txt
+      - run: python -m unittest discover -s tests -v
+        env:
+          MPLBACKEND: Agg

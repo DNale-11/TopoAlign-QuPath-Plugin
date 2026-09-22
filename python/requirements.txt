@@ -1,0 +1,5 @@
+# Install the existing TopoAlign package separately (see README).
+# These supplement its package metadata for headless service use.
+networkx>=2.6,<4
+matplotlib>=3.7,<3.10
+imagecodecs>=2023.9.18,<2024.6
