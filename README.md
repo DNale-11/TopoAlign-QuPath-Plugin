@@ -30,6 +30,8 @@ python -m pip install "networkx>=2.6,<4" "matplotlib>=3.7,<3.10" "imagecodecs>=2
 
 ### 新环境安装
 
+原算法仓库目前为私有仓库，需要拥有访问权限并已配置 Git 身份验证；普通未授权下载会失败。没有远程访问权限时，使用上面的本地源码安装方式。
+
 ```bash
 conda create -n topoalign-qupath python=3.10 -y
 conda activate topoalign-qupath
@@ -125,5 +127,7 @@ python -m unittest discover -s tests -v
 ```
 
 在已安装 TopoAlign 包的环境中可以省略 `TOPOALIGN_SOURCE_ROOT`。测试包含实际两阶段匹配、已知平移恢复、图像 warp、原图坐标换算、输出覆盖保护、失败清单和含中文/空格的路径。
+
+GitHub Actions 默认执行 Java 构建/测试和 Python 语法检查。真实核心集成测试已在本机完成；云端该任务默认跳过，因为 Actions 默认令牌无法读取另一个私有仓库。如需启用，在仓库 Actions variables 中设置 `TOPOALIGN_CORE_TESTS=true`，并配置仅对原算法仓库有 Contents 只读权限的 secret `TOPOALIGN_SOURCE_TOKEN`。不要将令牌写入代码或配置文件。
 
 算法来源固定参考原项目提交 [`693c678`](https://github.com/DNale-11/cell_registration/commit/693c6781e162f15e9f7783c7da3b94fa270fb2b0)。适配层使用 `TopoAlignConfig` 与 `cell_registration.service.register()`，可通过 source folder 指向兼容的本地新版本。

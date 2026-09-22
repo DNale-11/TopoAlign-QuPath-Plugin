@@ -13,3 +13,5 @@ The synthetic integration fixture contains 25 individually labelled cells with v
 Failure cases cover binary mask rejection, unsupported non-rigid RANSAC, an exception during registration, existing-output protection, process failure, process cancellation, bounded log reading, and paths containing spaces/Unicode.
 
 Limits: no interactive visual QA of the dialog, real tissue registration benchmark, GPU run, or Cellpose model inference was performed for this release. The image-mode integration test substitutes known segmentation labels while exercising the real matching and image warp pipeline. QuPath service discovery/image export were tested separately from the Python integration tests.
+
+The original algorithm repository is private. GitHub Actions therefore runs Java tests and Python syntax checks by default; real core integration in CI requires an explicitly configured read-only source credential and is otherwise skipped. The first CI attempt exposed this access requirement during dependency installation; it was not an algorithm test failure.

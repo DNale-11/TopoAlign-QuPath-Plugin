@@ -22,14 +22,31 @@ jobs:
         with:
           name: qupath-extension-topoalign
           path: build/libs/*.jar
-  python:
+  python-syntax:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      - run: python -m pip install "TopoAlign @ git+https://github.com/DNale-11/cell_registration.git@693c6781e162f15e9f7783c7da3b94fa270fb2b0" -r python/requirements.txt
+      - run: python -m py_compile src/main/resources/python/topoalign_bridge.py tests/test_bridge.py
+  core-integration:
+    # The original algorithm repository is private; the default GITHUB_TOKEN cannot access it.
+    if: vars.TOPOALIGN_CORE_TESTS == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: DNale-11/cell_registration
+          ref: 693c6781e162f15e9f7783c7da3b94fa270fb2b0
+          token: ${{ secrets.TOPOALIGN_SOURCE_TOKEN }}
+          path: topoalign-core
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: python -m pip install ./topoalign-core -r python/requirements.txt
       - run: python -m unittest discover -s tests -v
         env:
           MPLBACKEND: Agg
